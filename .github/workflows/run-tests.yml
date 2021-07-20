@@ -2,7 +2,7 @@ name: Tests
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
   schedule:
     - cron: '0 0 * * *'
@@ -14,8 +14,8 @@ jobs:
         php: ['7.3', '7.4', '8.0']
         os: [ubuntu-latest, macos-latest]
         dependency-version: [prefer-lowest, prefer-stable]
+        phpunit: ['9.*']
         include:
-          - phpunit: '9.*'
           - php: '7.3'
             phpunit: '8.*'
 
@@ -24,29 +24,19 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
         with:
           path: ~/.composer/cache/files
           key: ${{ runner.os }}-php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-${{ hashFiles('composer.json') }}
           restore-keys: |
             ${{ runner.os }}-php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-
             ${{ runner.os }}-php-${{ matrix.php }}-composer-
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite3, pdo_sqlite
-
-      - name: Install dependencies
-        run: |
+      - run: |
           composer require phpunit/phpunit:${{ matrix.phpunit }} --no-update --no-interaction
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
           composer require illuminate/view --with-all-dependencies --no-interaction
-
-      - name: Execute tests
-        run: vendor/bin/phpunit
+      - run: vendor/bin/phpunit

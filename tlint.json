@@ -1,9 +1,7 @@
 {
-  "preset": "tighten",
-  "disabled": [],
-  "excluded": [
-    "tests/Linting/Laravel/",
-    "src/Illuminate/",
-    "tests/fixtures/"
-  ]
+    "preset": "tighten",
+    "excluded": [
+        "src/Illuminate/",
+        "tests/fixtures/"
+    ]
 }

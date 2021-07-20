@@ -36,6 +36,12 @@
     "scripts": {
         "buildTestEnvironments": "./scripts/buildTestEnvironments.sh",
         "bumpVersion": "sed -i '' \"/TLINT_VERSION/ s/'v.*'/'$(git describe --abbrev=0 --tag)'/\" ./bin/tlint",
-        "runTests": "./scripts/runTests.sh"
+        "runTests": "./scripts/runTests.sh",
+        "update-fixture-app": [
+            "rm -rf ./tests/fixtures/laravel",
+            "composer create-project laravel/laravel ./tests/fixtures/laravel",
+            "echo '{\"preset\":\"laravel\"}' > ./tests/fixtures/laravel/tlint.json",
+            "rm -rf ./tests/fixtures/laravel/composer.lock"
+        ]
     }
 }
